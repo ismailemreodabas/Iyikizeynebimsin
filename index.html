@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeynep'e...</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;800&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Inter',sans-serif;
+    overflow:hidden;
+    background:black;
+    color: white;
+}
+
+/* BAŞLAT BUTONU */
+.start-btn{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    padding:16px 32px;
+    font-size:20px;
+    background: linear-gradient(45deg, #3b82f6, #1e3a8a);
+    color:white;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    z-index:100;
+    font-weight: 800;
+    box-shadow: 0 0 20px rgba(59,130,246,0.5);
+    transition: 0.3s;
+}
+.start-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+/* RESTART */
+.restart-btn{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color:white;
+    border: 1px solid white;
+    border-radius:30px;
+    cursor:pointer;
+    display:none;
+    z-index:100;
+    backdrop-filter: blur(5px);
+}
+
+.container{
+    width:100%;
+    height:100vh;
+    position:relative;
+    background:radial-gradient(circle at 20% 20%, #1e3a8a, #020617 70%);
+    overflow: hidden;
+}
+
+/* YILDIZLAR */
+.stars::before{
+    content:"";
+    position:absolute;
+    width:200%; height:200%;
+    background-image:radial-gradient(white 1px, transparent 1px);
+    background-size:100px 100px;
+    opacity:.3;
+    animation:moveStars 100s linear infinite;
+}
+@keyframes moveStars{
+    from{transform:translate(0,0);}
+    to{transform:translate(-50%,-50%);}
+}
+
+/* İÇERİK - SOLA YASLI */
+.content{
+    opacity:0;
+    position:absolute;
+    top:50%;
+    left:10%;
+    transform:translateY(-50%);
+    width:80%;
+    max-width:600px;
+    transition:1s;
+    text-align: left;
+}
+
+.prefix{
+    font-size:34px;
+    font-weight:900;
+    color:#3b82f6;
+    margin-bottom: 10px;
+}
+
+.main{
+    font-size:26px;
+    line-height:1.4;
+    min-height:120px;
+    font-weight: 300;
+}
+
+/* FINAL MESAJI - SOLA YASLI */
+.final-text{
+    position:absolute;
+    top:50%;
+    left:10%;
+    transform:translateY(-50%);
+    width:80%;
+    max-width:600px;
+    font-family:'Playfair Display',serif;
+    font-size:22px;
+    text-align:left;
+    line-height:2;
+    opacity:0;
+    transition:1.5s;
+    z-index: 10;
+}
+
+/* BÜYÜK FINAL */
+.super-final{
+    position:absolute;
+    top:45%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+    font-size:36px;
+    font-weight:800;
+    text-align:center;
+    text-shadow: 0 0 20px #3b82f6;
+}
+
+.word{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(30px);
+    transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    margin:0 8px;
+}
+
+/* KAYAN ARKA PLAN YAZILARI */
+.bg-marquee-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    pointer-events: none;
+    opacity: 0.12;
+}
+
+.marquee-text {
+    position: absolute;
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(110vh); }
+    to { transform: translateY(-20vh); }
+}
+
+/* KALP - OPAKLIĞI DÜŞÜRÜLDÜ */
+.heart{
+    position:absolute;
+    font-size:20px;
+    animation:heartOut 2s forwards;
+    pointer-events: none;
+    opacity: 0.05 !important;
+}
+@keyframes heartOut{
+    0%{transform:scale(0.5) rotate(0deg);}
+    100%{transform:translateY(-150px) scale(1.5) rotate(20deg);}
+}
+
+.signature{
+    position:absolute;
+    bottom:18px;
+    width:100%;
+    text-align:center;
+    font-size:12px;
+    opacity:.4;
+    color:#94a3b8;
+}
+
+.cursor{ animation:blink 1s infinite; color: #3b82f6; }
+@keyframes blink{50%{opacity:0;}}
+</style>
+</head>
+
+<body>
+
+<button class="start-btn" onclick="startExperience()">❤️ Başlat</button>
+<button class="restart-btn" id="restart" onclick="location.reload()">Yeniden İzle ↺</button>
+
+<div class="container">
+    <div class="stars"></div>
+    <div class="bg-marquee-container" id="bg"></div>
+
+    <div class="content" id="content">
+        <div class="prefix" id="prefix"></div>
+        <div class="main">
+            <span id="text"></span><span class="cursor" id="cursor">|</span>
+        </div>
+    </div>
+
+    <div class="final-text" id="finalText"></div>
+    <div class="super-final" id="superFinal"></div>
+    <div class="signature">Emre Odabaş</div>
+</div>
+
+<audio id="music" src="anilari-sakla.mp3" loop></audio>
+
+<script>
+const sentences = [
+    {prefix:"Sen", text:"hayatıma geldiğinden beri her şey daha anlamlı oldu."},
+    {prefix:"Seni", text:"sevmek bana hep iyi geliyor."},
+    {prefix:"Hayatımda", text:"olduğun için çok şanslı hissediyorum."},
+    {prefix:"Sen", text:"kalbimdeki en güzel duyguların sahibisin."},
+    {prefix:"Bugün", text:"senin doğum günün ve sen benim için çok özelsin."}
+];
+
+const finalLines = [
+    "Hayatının geri kalanında tüm kötülükler senden uzak olsun.",
+    "Mutluluklar adımlarının olduğu her yerde seni bulsun.",
+    "Yeni yaşın sana huzur, sağlık ve neşe getirsin.",
+    "Unutma, ben her zaman senin yanındayım...",
+    "İyi ki varsın sevgilim 💙"
+];
+
+const superMessage = "💙 SENİ ÇOK SEVİYORUM 💙";
+
+let currentSentence = 0;
+let currentChar = 0;
+let isDeleting = false;
+
+function startExperience(){
+    document.querySelector(".start-btn").style.opacity="0";
+    setTimeout(()=> document.querySelector(".start-btn").style.display="none", 500);
+    
+    document.getElementById("content").style.opacity="1";
+    document.getElementById("cursor").style.display="inline";
+    
+    const audio = document.getElementById("music");
+    audio.play().catch(e => console.log("Müzik hatası:", e));
+
+    type();
+}
+
+function type(){
+    const current = sentences[currentSentence];
+    if(!current) return;
+    document.getElementById("prefix").textContent = current.prefix;
+
+    if(isDeleting){
+        document.getElementById("text").textContent = current.text.substring(0, currentChar--);
+    } else {
+        document.getElementById("text").textContent = current.text.substring(0, currentChar++);
+    }
+
+    if(!isDeleting && currentChar === current.text.length + 1){
+        setTimeout(() => isDeleting = true, 1500);
+    } else if(isDeleting && currentChar === 0){
+        isDeleting = false;
+        currentSentence++;
+        if(currentSentence === sentences.length){
+            startFinal();
+            return;
+        }
+    }
+    setTimeout(type, isDeleting ? 40 : 70);
+}
+
+function startFinal(){
+    document.getElementById("content").style.opacity="0";
+    setTimeout(() => {
+        document.getElementById("finalText").style.opacity = "1";
+        typeFinal(0);
+    }, 1000);
+}
+
+function typeFinal(lineIndex){
+    if(lineIndex < finalLines.length){
+        const line = document.createElement("div");
+        line.style.marginBottom = "15px";
+        document.getElementById("finalText").appendChild(line);
+        
+        let charIndex = 0;
+        function typeLine(){
+            if(charIndex < finalLines[lineIndex].length){
+                line.textContent += finalLines[lineIndex][charIndex++];
+                setTimeout(typeLine, 40);
+            } else {
+                setTimeout(() => typeFinal(lineIndex + 1), 700);
+            }
+        }
+        typeLine();
+    } else {
+        setTimeout(showSuperFinal, 2000);
+    }
+}
+
+function showSuperFinal(){
+    document.getElementById("finalText").style.opacity = "0";
+    
+    setTimeout(() => {
+        const words = superMessage.split(" ");
+        words.forEach((word, index) => {
+            const w = document.createElement("span");
+            w.className = "word";
+            w.textContent = word;
+            document.getElementById("superFinal").appendChild(w);
+            
+            setTimeout(() => {
+                w.style.opacity = "1";
+                w.style.transform = "translateY(0) scale(1.1)";
+                w.style.textShadow = "0 0 30px #3b82f6";
+            }, index * 600); 
+        });
+
+        createFloatingBackground();
+        startExplodingHearts();
+        
+        setTimeout(() => {
+            document.getElementById("restart").style.display = "block";
+        }, 5000);
+    }, 1500);
+}
+
+function createFloatingBackground(){
+    const phrases = ["Seni Seviyorum", "İyi ki", "Aşkım","zeynebim","hayatım","🥺", "Her Şeyim","😍 ","💕","🙏 ", "Bebeğim", "Zeynep 💙", "Mavişim"];
+    const bg = document.getElementById("bg");
+    
+    for(let i=0; i<25; i++){
+        setTimeout(() => {
+            const span = document.createElement("span");
+            span.className = "marquee-text";
+            span.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            span.style.left = Math.random() * 100 + "%";
+            span.style.animationDuration = (10 + Math.random() * 10) + "s";
+            bg.appendChild(span);
+        }, i * 300);
+    }
+}
+
+function startExplodingHearts(){
+    for(let i=0; i<15; i++) {
+        spawnHeart();
+    }
+    setInterval(spawnHeart, 300);
+}
+
+function spawnHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = Math.random() > 0.5 ? "💙" : "❤️";
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.top = (Math.random() * 50 + 40) + "%";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 2500);
+}
+</script>
+</body>
+</html>
